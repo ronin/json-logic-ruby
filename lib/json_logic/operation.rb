@@ -64,7 +64,10 @@ module JSONLogic
       'if' => ->(v, d) {
         v.each_slice(2) do |condition, value|
           return condition if value.nil?
-          return value if condition.truthy?
+
+          if condition.truthy?
+            return value.is_a?(Array) ? value.map { |val| interpolated_block(val, d) } : interpolated_block(value, d)
+          end
         end
       },
       '=='    => ->(v, d) { v[0].to_s == v[1].to_s },
